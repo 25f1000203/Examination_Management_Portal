@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<h3 class="page-title">Search results for "{{ q }}"</h3>
+<div class="card mb-3"><div class="card-header">My exams ({{ exams|length }})</div><ul class="list-group list-group-flush">{% for e in exams %}<li class="list-group-item">{{ e.course_code }} / {{ e.name }} &middot; {{ e.exam_type }} <a class="float-end" href="{{ url_for('examiner.slot_form', exam_id=e.id) }}">+ Fill availability</a></li>{% else %}<li class="list-group-item text-muted">No matches</li>{% endfor %}</ul></div>
+<div class="card"><div class="card-header">Booked students ({{ students|length }})</div><ul class="list-group list-group-flush">{% for b in students %}<li class="list-group-item">#{{ b.student_id }} {{ b.student_name }} &middot; {{ b.exam_name }} &middot; {{ b.slot_date }} {{ m.badge('evaluated' if b.evaluation_id else 'pending') }}{% if not b.evaluation_id %}<a class="float-end" href="{{ url_for('examiner.evaluate', booking_id=b.id) }}">+ Rubrics</a>{% endif %}</li>{% else %}<li class="list-group-item text-muted">No matches</li>{% endfor %}</ul></div>
+{% endblock %}

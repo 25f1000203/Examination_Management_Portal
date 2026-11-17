@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Slot students{% endblock %}
+{% block content %}
+<h3 class="page-title">Slot #{{ slot.id }} &mdash; {{ slot.exam_name }}</h3>
+<p>{{ slot.slot_date }} {{ slot.start_time }}-{{ slot.end_time }} &middot; {{ slot.booked_count }}/{{ slot.capacity }} booked</p>
+<div class="card"><div class="table-responsive"><table class="table"><thead><tr><th>Booking</th><th>Student</th><th>Booked at</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for b in students %}<tr><td>{{ b.id }}</td><td>#{{ b.student_id }} {{ b.student_name }}</td><td>{{ b.booked_at }}</td><td>{{ m.badge('evaluated' if b.evaluation_id else 'pending') }}</td><td>{% if not b.evaluation_id %}<a href="{{ url_for('examiner.evaluate', booking_id=b.id) }}">+ Rubrics</a>{% else %}{{ b.total_marks|num }}/{{ b.max_marks|num }}{% endif %}</td></tr>
+{% else %}{{ m.empty(5, 'No active bookings in this slot.') }}{% endfor %}</tbody></table></div></div>
+<a class="btn btn-outline-emp mt-3" href="{{ url_for('examiner.slots') }}">&larr; Back</a>
+{% endblock %}

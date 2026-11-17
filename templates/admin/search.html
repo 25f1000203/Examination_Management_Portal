@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<h3 class="page-title">Search results for "{{ q }}"</h3>
+{% macro box(title, rows) %}<div class="card mb-3"><div class="card-header">{{ title }} ({{ rows|length }})</div><ul class="list-group list-group-flush">{{ caller() }}</ul></div>{% endmacro %}
+{% call box('Students', students) %}{% for s in students %}<li class="list-group-item"><a href="{{ url_for('admin.student_view', student_id=s.id) }}">#{{ s.id }} {{ s.name }}</a> &middot; {{ s.email }}</li>{% else %}<li class="list-group-item text-muted">No matches</li>{% endfor %}{% endcall %}
+{% call box('Examiners', examiners) %}{% for x in examiners %}<li class="list-group-item"><a href="{{ url_for('admin.examiner_view', examiner_id=x.id) }}">#{{ x.id }} {{ x.name }}</a> &middot; {{ x.department }} {{ m.badge(x.status) }}</li>{% else %}<li class="list-group-item text-muted">No matches</li>{% endfor %}{% endcall %}
+{% call box('Courses', courses) %}{% for c in courses %}<li class="list-group-item"><a href="{{ url_for('admin.course_form', course_id=c.id) }}">{{ c.code }} - {{ c.name }}</a></li>{% else %}<li class="list-group-item text-muted">No matches</li>{% endfor %}{% endcall %}
+{% call box('Examinations', exams) %}{% for e in exams %}<li class="list-group-item"><a href="{{ url_for('admin.exam_form', exam_id=e.id) }}">{{ e.course_code }} / {{ e.name }}</a> &middot; {{ e.exam_type }}</li>{% else %}<li class="list-group-item text-muted">No matches</li>{% endfor %}{% endcall %}
+{% endblock %}

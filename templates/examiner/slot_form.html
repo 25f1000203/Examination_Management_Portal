@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Slot{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:640px"><div class="card-header">{{ 'Edit slot' if slot else 'Create slot' }} (examiner availability)</div><div class="card-body">
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <div class="mb-3"><label class="form-label" for="exam_id">Exam *</label>
+  <select class="form-select" id="exam_id" name="exam_id" {% if slot %}disabled{% endif %} required><option value="">Select exam</option>{% for e in exams %}<option value="{{ e.id }}" {% if e.id == data.get('exam_id') %}selected{% endif %}>{{ e.name }}</option>{% endfor %}</select></div>
+  {{ m.field('Date', 'slot_date', data.get('slot_date',''), 'date') }}
+  <div class="row"><div class="col-md-6">{{ m.field('Start time', 'start_time', data.get('start_time',''), 'time') }}</div><div class="col-md-6">{{ m.field('End time', 'end_time', data.get('end_time',''), 'time') }}</div></div>
+  <div class="row"><div class="col-md-6">{{ m.field('Max capacity', 'capacity', data.get('capacity',''), 'number', extra='min="1" step="1"') }}</div>
+  <div class="col-md-6"><div class="mb-3"><label class="form-label" for="status">Status</label><select class="form-select" id="status" name="status"><option value="active" {% if data.get('status') == 'active' %}selected{% endif %}>active</option><option value="closed" {% if data.get('status') == 'closed' %}selected{% endif %}>closed</option></select></div></div></div>
+  {% if slot %}<p class="small text-muted">Already booked: {{ slot.booked_count }} (capacity cannot go below this).</p>{% endif %}
+  <button class="btn btn-emp">{{ 'Update' if slot else 'Save' }}</button> <a class="btn btn-outline-emp" href="{{ url_for('examiner.slots') }}">Cancel</a>
+</form></div></div>
+{% endblock %}

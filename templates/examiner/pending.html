@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Account status{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-5" style="max-width:560px"><div class="card-header">Account status {{ m.badge(examiner.status) }}</div><div class="card-body">
+{% if examiner.status == 'pending' %}<p>Hello {{ examiner.name }}, your account is <strong>waiting for Admin approval</strong>. You can use examiner features once it is approved.</p>
+{% elif examiner.status == 'rejected' %}<p>Your registration was <strong>rejected</strong> by the Admin. Please contact the examination office.</p>
+{% else %}<p>Your account has been <strong>deactivated</strong>. Please contact the Admin.</p>{% endif %}
+<a class="btn btn-emp" href="{{ url_for('auth.logout') }}">Logout</a></div></div>
+{% endblock %}

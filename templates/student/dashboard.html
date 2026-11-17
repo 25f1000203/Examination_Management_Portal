@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<h3 class="page-title">Welcome, {{ user_name }}</h3>
+<div class="row g-3 mb-3">{% for label, value in stats.items() %}<div class="col-6 col-md-3"><div class="card stat-card"><div class="num">{{ value }}</div><div class="lbl">{{ label }}</div></div></div>{% endfor %}</div>
+<div class="card mb-3"><div class="card-header">Available Slots <a class="small" href="{{ url_for('student.slots') }}">See all</a></div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Exam</th><th>Date</th><th>St. time</th><th>End time</th><th>Max seats</th><th>Available</th><th>Action</th></tr></thead><tbody>
+{% for s in available %}<tr><td>{{ s.id }}</td><td>{{ s.course_code }} / {{ s.exam_name }}</td><td>{{ s.slot_date }}</td><td>{{ s.start_time }}</td><td>{{ s.end_time }}</td><td>{{ s.capacity }}</td><td>{{ s.available }}</td><td><a class="btn btn-sm btn-gold" href="{{ url_for('student.book', slot_id=s.id) }}">Book</a></td></tr>
+{% else %}{{ m.empty(8, 'No open slots right now. Check back later.') }}{% endfor %}</tbody></table></div></div>
+<div class="card mb-3"><div class="card-header">Upcoming Exams</div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Booking</th><th>Course</th><th>Exam</th><th>Date</th><th>Type</th><th>Duration</th><th>Max marks</th><th>Action</th></tr></thead><tbody>
+{% for b in upcoming %}<tr><td>{{ b.id }}</td><td>{{ b.course_code }}</td><td>{{ b.exam_name }}</td><td>{{ b.slot_date }} {{ b.start_time }}</td><td>{{ b.exam_type }}</td><td>{{ b.duration_minutes }} min</td><td>{{ b.max_marks|num }}</td><td class="actions"><a href="{{ url_for('student.exam_detail', exam_id=b.exam_id) }}">View</a> | <a href="{{ url_for('student.cancel', booking_id=b.id) }}">Cancel</a></td></tr>
+{% else %}{{ m.empty(8, 'You have no upcoming exams.') }}{% endfor %}</tbody></table></div></div>
+<div class="card"><div class="card-header">Published Results</div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Exam</th><th>Marks</th><th>Action</th></tr></thead><tbody>
+{% for b in results %}<tr><td>{{ b.course_code }} / {{ b.exam_name }}</td><td>{{ b.total_marks|num }} / {{ b.max_marks|num }}</td><td><a href="{{ url_for('student.result', booking_id=b.id) }}">View marks &amp; feedback</a></td></tr>
+{% else %}{{ m.empty(3, 'No results published yet.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

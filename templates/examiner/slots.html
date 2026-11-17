@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}My Slots{% endblock %}
+{% block content %}
+<h3 class="page-title">My slots</h3>
+<div class="card"><div class="card-header">Slots I created <a class="btn btn-sm btn-gold" href="{{ url_for('examiner.slot_form') }}">+ New Slot</a></div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Exam</th><th>Date</th><th>Start</th><th>End</th><th>Booked / Capacity</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for s in slots %}<tr><td>{{ s.id }}</td><td>{{ s.course_code }} / {{ s.exam_name }}</td><td>{{ s.slot_date }}</td><td>{{ s.start_time }}</td><td>{{ s.end_time }}</td><td>{{ s.booked_count }} / {{ s.capacity }}</td><td>{{ m.badge(s.status) }}</td>
+<td class="actions"><a href="{{ url_for('examiner.slot_students', slot_id=s.id) }}">Students</a> | <a href="{{ url_for('examiner.slot_form', slot_id=s.id) }}">Edit</a> | <a href="{{ url_for('examiner.slot_delete', slot_id=s.id) }}">Delete</a></td></tr>
+{% else %}{{ m.empty(8, 'You have not created any slots yet.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

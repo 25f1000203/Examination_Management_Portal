@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}History{% endblock %}
+{% block content %}
+<h3 class="page-title">Bookings &amp; results history</h3>
+<div class="card mb-3"><div class="card-header">My bookings</div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Course</th><th>Exam</th><th>Date</th><th>Time</th><th>Examiner</th><th>Status</th><th>Result</th><th>Action</th></tr></thead><tbody>
+{% for b in bookings %}<tr><td>{{ b.id }}</td><td>{{ b.course_code }}</td><td>{{ b.exam_name }}</td><td>{{ b.slot_date }}</td><td>{{ b.start_time }}-{{ b.end_time }}</td><td>{{ b.examiner_name }}</td><td>{{ m.badge(b.status) }}</td>
+<td>{% if b.evaluation_id and b.results_published %}<a href="{{ url_for('student.result', booking_id=b.id) }}">{{ b.total_marks|num }} / {{ b.max_marks|num }}</a>{% elif b.evaluation_id %}Not published{% else %}-{% endif %}</td>
+<td>{% if b.status == 'booked' %}<a href="{{ url_for('student.cancel', booking_id=b.id) }}">Cancel</a>{% else %}-{% endif %}</td></tr>
+{% else %}{{ m.empty(9, 'You have not booked anything yet.') }}{% endfor %}</tbody></table></div></div>
+<div class="card"><div class="card-header">Activity log</div><div class="table-responsive"><table class="table"><thead><tr><th>When</th><th>Booking</th><th>Action</th><th>By</th><th>Note</th></tr></thead><tbody>
+{% for h in log %}<tr><td>{{ h.created_at }}</td><td>#{{ h.booking_id }}</td><td>{{ h.action.replace('_',' ') }}</td><td>{{ h.actor_role }}</td><td>{{ h.note or '' }}</td></tr>{% else %}{{ m.empty(5, 'No activity yet.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

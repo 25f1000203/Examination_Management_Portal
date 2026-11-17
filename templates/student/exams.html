@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Exams{% endblock %}
+{% block content %}
+<h3 class="page-title">Examinations</h3>
+<div class="card"><div class="card-body border-bottom"><form class="row g-2" method="get">
+  <div class="col-md-4"><input class="form-control" name="q" value="{{ q }}" placeholder="Search exams or courses"></div>
+  <div class="col-md-3"><select class="form-select" name="course_id"><option value="">All courses</option>{% for c in courses %}<option value="{{ c.id }}" {% if c.id == course_id %}selected{% endif %}>{{ c.code }}</option>{% endfor %}</select></div>
+  <div class="col-md-2"><select class="form-select" name="exam_type"><option value="">All types</option>{% for t in exam_types %}<option {% if t == exam_type %}selected{% endif %}>{{ t }}</option>{% endfor %}</select></div>
+  <div class="col-auto"><button class="btn btn-emp">Filter</button> <a class="btn btn-outline-emp" href="{{ url_for('student.exams') }}">Reset</a></div></form></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Course</th><th>Exam</th><th>Type</th><th>Duration</th><th>Max marks</th><th>Action</th></tr></thead><tbody>
+{% for e in exams %}<tr><td>{{ e.id }}</td><td>{{ e.course_code }} - {{ e.course_name }}</td><td>{{ e.name }}</td><td>{{ e.exam_type }}</td><td>{{ e.duration_minutes }} min</td><td>{{ e.max_marks|num }}</td><td><a href="{{ url_for('student.exam_detail', exam_id=e.id) }}">View</a></td></tr>
+{% else %}{{ m.empty(7, 'No examinations match your search.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

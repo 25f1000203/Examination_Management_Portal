@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Examiner Dashboard{% endblock %}
+{% block content %}
+<h3 class="page-title">Examiner Dashboard</h3>
+<div class="row g-3 mb-3">{% for label, value in stats.items() %}<div class="col-6 col-md"><div class="card stat-card"><div class="num">{{ value }}</div><div class="lbl">{{ label }}</div></div></div>{% endfor %}</div>
+<div class="card mb-3"><div class="card-header">Assigned Exams</div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Course</th><th>Name</th><th>Type</th><th>Duration</th><th>Max marks</th><th>Action</th></tr></thead><tbody>
+{% for e in exams %}<tr><td>{{ e.id }}</td><td>{{ e.course_code }}</td><td>{{ e.name }}</td><td>{{ e.exam_type }}</td><td>{{ e.duration_minutes }} min</td><td>{{ e.max_marks|num }}</td><td><a class="btn btn-sm btn-gold" href="{{ url_for('examiner.slot_form', exam_id=e.id) }}">+ Fill availability</a></td></tr>
+{% else %}{{ m.empty(7, 'No exams are assigned to you yet. The Admin assigns exams.') }}{% endfor %}</tbody></table></div></div>
+<div class="card"><div class="card-header">Booked Slots</div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Slot Id</th><th>Student</th><th>Exam</th><th>Slot</th><th>Booking date</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for b in booked %}<tr><td>{{ b.id }}</td><td>{{ b.slot_id }}</td><td>#{{ b.student_id }} {{ b.student_name }}</td><td>{{ b.exam_name }}</td><td>{{ b.slot_date }} {{ b.start_time }}-{{ b.end_time }}</td><td>{{ b.booked_at }}</td><td>{{ m.badge('evaluated' if b.evaluation_id else 'pending') }}</td>
+<td>{% if b.evaluation_id %}<a href="{{ url_for('examiner.history') }}">View ({{ b.total_marks|num }}/{{ b.max_marks|num }})</a>{% else %}<a class="btn btn-sm btn-gold" href="{{ url_for('examiner.evaluate', booking_id=b.id) }}">+ Rubrics</a>{% endif %}</td></tr>
+{% else %}{{ m.empty(8, 'No students have booked your slots yet.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

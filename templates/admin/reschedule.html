@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}Reschedule{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:700px"><div class="card-header">Reschedule booking #{{ booking.id }}</div><div class="card-body">
+<p>{{ booking.student_name }} &middot; {{ booking.exam_name }}<br>Current slot: {{ booking.slot_date }} {{ booking.start_time }}-{{ booking.end_time }} ({{ booking.examiner_name }})</p>
+{% if options %}
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <label class="form-label" for="slot_id">Move to slot *</label>
+  <select class="form-select mb-3" id="slot_id" name="slot_id" required>{% for s in options %}<option value="{{ s.id }}">#{{ s.id }} &mdash; {{ s.slot_date }} {{ s.start_time }}-{{ s.end_time }}, {{ s.examiner_name }} ({{ s.capacity - s.booked_count }} seats free)</option>{% endfor %}</select>
+  <button class="btn btn-emp">Reschedule</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.bookings') }}">Cancel</a>
+</form>
+{% else %}<div class="alert alert-warning">No other active slot with free seats exists for this examination. Create one first.</div><a class="btn btn-outline-emp" href="{{ url_for('admin.bookings') }}">Back</a>{% endif %}
+</div></div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}View Examiner{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:700px"><div class="card-header">View examiner #{{ examiner.id }} {{ m.badge(examiner.status) }}</div><div class="card-body">
+  <dl class="row mb-3"><dt class="col-sm-4">Name</dt><dd class="col-sm-8">{{ examiner.name }}</dd><dt class="col-sm-4">Contact details</dt><dd class="col-sm-8">{{ examiner.email }} / {{ examiner.phone }}</dd><dt class="col-sm-4">Department</dt><dd class="col-sm-8">{{ examiner.department }}</dd><dt class="col-sm-4">Registered</dt><dd class="col-sm-8">{{ examiner.created_at }}</dd><dt class="col-sm-4">Slots created</dt><dd class="col-sm-8">{{ slot_count }}</dd><dt class="col-sm-4">Assigned exams</dt><dd class="col-sm-8">{% for e in exams %}{{ e.course_code }} / {{ e.name }}{% if not loop.last %}, {% endif %}{% else %}None{% endfor %}</dd></dl>
+  <form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <label class="form-label d-block">Status action</label>
+    <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="action" id="a1" value="approve" {% if examiner.status != 'approved' %}checked{% endif %}><label class="form-check-label" for="a1">Approve{% if examiner.status in ('rejected','deactivated') %} (re-activate){% endif %}</label></div>
+    <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="action" id="a2" value="reject"><label class="form-check-label" for="a2">Reject</label></div>
+    <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="action" id="a3" value="deactivate" {% if examiner.status == 'approved' %}checked{% endif %}><label class="form-check-label" for="a3">Deactivate</label></div>
+    <div class="mt-3"><button class="btn btn-emp">Update</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.examiners') }}">Close</a></div>
+  </form></div></div>
+{% endblock %}

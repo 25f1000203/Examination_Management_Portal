@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Slots{% endblock %}
+{% block content %}
+<h3 class="page-title">Available slots</h3>
+<div class="card"><div class="card-body border-bottom"><form class="row g-2" method="get">
+  <div class="col-md-4"><select class="form-select" name="exam_id"><option value="">All examinations</option>{% for e in exams %}<option value="{{ e.id }}" {% if e.id == exam_id %}selected{% endif %}>{{ e.name }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><input class="form-control" type="date" name="date" value="{{ date }}"></div>
+  <div class="col-auto"><button class="btn btn-emp">Filter</button> <a class="btn btn-outline-emp" href="{{ url_for('student.slots') }}">Reset</a></div></form></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Exam</th><th>Date</th><th>St. time</th><th>End time</th><th>Max seats</th><th>Available</th><th>Examiner</th><th>Action</th></tr></thead><tbody>
+{% for s in slots %}<tr><td>{{ s.id }}</td><td>{{ s.course_code }} / {{ s.exam_name }}</td><td>{{ s.slot_date }}</td><td>{{ s.start_time }}</td><td>{{ s.end_time }}</td><td>{{ s.capacity }}</td><td>{{ s.available }}</td><td>{{ s.examiner_name }}</td><td><a class="btn btn-sm btn-gold" href="{{ url_for('student.book', slot_id=s.id) }}">Book</a></td></tr>
+{% else %}{{ m.empty(9, 'No bookable slots found. (Slots disappear once full, past, already booked by you, or outside the booking window.)') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

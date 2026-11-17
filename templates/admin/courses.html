@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Courses{% endblock %}
+{% block content %}
+<h3 class="page-title">Courses</h3>
+<div class="card"><div class="card-header">All courses <a class="btn btn-sm btn-gold" href="{{ url_for('admin.course_form') }}">+ New Course</a></div>
+<div class="card-body border-bottom"><form class="row g-2" method="get"><div class="col-md-5"><input class="form-control" name="q" value="{{ q }}" placeholder="Search by code or name"></div><div class="col-auto"><button class="btn btn-emp">Search</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.courses') }}">Reset</a></div></form></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Course code</th><th>Name</th><th>Description</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for c in courses %}<tr><td>{{ c.id }}</td><td>{{ c.code }}</td><td>{{ c.name }}</td><td>{{ c.description or '-' }}</td><td>{{ m.badge('active' if c.is_active else 'inactive') }}</td>
+<td class="actions"><a href="{{ url_for('admin.course_form', course_id=c.id) }}">Edit</a> | <a href="{{ url_for('admin.course_delete', course_id=c.id) }}">Delete</a> | <a href="{{ url_for('admin.exam_form', course_id=c.id) }}">+ Exam</a></td></tr>
+{% else %}{{ m.empty(6, 'No courses found.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

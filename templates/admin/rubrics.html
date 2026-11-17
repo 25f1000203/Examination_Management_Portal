@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Rubrics{% endblock %}
+{% block content %}
+<h3 class="page-title">Rubrics &mdash; {{ exam.course_code }} / {{ exam.name }}</h3>
+<div class="card"><div class="card-header">Marking criteria (rubric total {{ total|num }} of {{ exam.max_marks|num }} marks) <a class="btn btn-sm btn-gold" href="{{ url_for('admin.rubric_form', exam_id=exam.id) }}">+ New Criteria</a></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Criteria name</th><th>Max marks</th><th>Weightage %</th><th>Description</th><th>Action</th></tr></thead><tbody>
+{% for r in rubrics %}<tr><td>{{ r.id }}</td><td>{{ r.criteria_name }}</td><td>{{ r.max_marks|num }}</td><td>{{ r.weightage|num }}</td><td>{{ r.description or '-' }}</td>
+<td class="actions"><a href="{{ url_for('admin.rubric_form', exam_id=exam.id, rubric_id=r.id) }}">Edit</a> | <a href="{{ url_for('admin.rubric_delete', exam_id=exam.id, rubric_id=r.id) }}">Delete</a></td></tr>
+{% else %}{{ m.empty(6, 'No criteria yet. Examiners cannot evaluate until a rubric exists.') }}{% endfor %}</tbody></table></div></div>
+<a class="btn btn-outline-emp mt-3" href="{{ url_for('admin.exams') }}">&larr; Back to examinations</a>
+{% endblock %}

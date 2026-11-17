@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="landing">
+  <h1>Examination Management Portal</h1>
+  <p class="tagline">Book exam slots, run evaluations and publish results &mdash; in one place.</p>
+  <div class="row g-4">
+    <div class="col-md-5">
+      <div class="card"><div class="card-header">Login</div><div class="card-body">
+        <form method="post" action="{{ url_for('auth.login') }}">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          {{ m.field('Username (email)', 'email', '', 'email', extra='autocomplete="username"') }}
+          {{ m.field('Password', 'password', '', 'password', extra='autocomplete="current-password"') }}
+          <button class="btn btn-emp">Login</button>
+          <span class="ms-2 small text-muted">New user? Register on the right.</span>
+        </form>
+      </div></div>
+    </div>
+    <div class="col-md-7">
+      <div class="card"><div class="card-header">Register</div><div class="card-body">
+        <form method="post" action="{{ url_for('auth.register') }}">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <div class="row">
+            <div class="col-md-6">{{ m.field('Username (email)', 'email', form.get('email','') if show_register else '', 'email') }}</div>
+            <div class="col-md-6">{{ m.field('Password', 'password', '', 'password', help='At least 6 characters') }}</div>
+          </div>
+          {{ m.field('Full name', 'name', form.get('name','')) }}
+          <div class="mb-3">
+            <label class="form-label d-block">User type *</label>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="user_type" id="t_examiner" value="examiner" {% if form.get('user_type') == 'examiner' %}checked{% endif %}><label class="form-check-label" for="t_examiner">Examiner</label></div>
+            <div class="form-check form-check-inline"><input class="form-check-input" type="radio" name="user_type" id="t_student" value="student" {% if form.get('user_type','student') == 'student' %}checked{% endif %}><label class="form-check-label" for="t_student">Student</label></div>
+            <div class="form-text">Examiner accounts need Admin approval before use.</div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">{{ m.field('Phone no.', 'phone', form.get('phone',''), 'tel') }}</div>
+            <div class="col-md-6">{{ m.field('Department', 'department', form.get('department',''), required=False, help='Required for examiners') }}</div>
+          </div>
+          <button class="btn btn-gold">Sign up</button>
+        </form>
+      </div></div>
+    </div>
+  </div>
+</div>
+{% endblock %}

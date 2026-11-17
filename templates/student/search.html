@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Search{% endblock %}
+{% block content %}
+<h3 class="page-title">Search results for "{{ q }}"</h3>
+<div class="card"><div class="card-header">Examinations ({{ exams|length }})</div><ul class="list-group list-group-flush">{% for e in exams %}<li class="list-group-item"><a href="{{ url_for('student.exam_detail', exam_id=e.id) }}">{{ e.course_code }} / {{ e.name }}</a> &middot; {{ e.exam_type }} &middot; {{ e.duration_minutes }} min</li>{% else %}<li class="list-group-item text-muted">No matches</li>{% endfor %}</ul></div>
+{% endblock %}

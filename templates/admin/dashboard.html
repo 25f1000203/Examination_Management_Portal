@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h3 class="page-title">Admin Dashboard</h3>
+<div class="row g-3 mb-3">
+  {% for label, value in counts.items() %}
+  <div class="col-6 col-md"><div class="card stat-card"><div class="num">{{ value }}</div><div class="lbl">{{ label }}</div></div></div>
+  {% endfor %}
+</div>
+{% if pending %}<div class="alert alert-warning py-2">{{ pending }} examiner account(s) waiting for approval. <a href="{{ url_for('admin.examiners', status='pending') }}">Review now</a></div>{% endif %}
+
+<div class="card mb-3"><div class="card-header">Courses <a class="btn btn-sm btn-gold" href="{{ url_for('admin.course_form') }}">+ New Course</a></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Course code</th><th>Name</th><th>Description</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for c in courses %}<tr><td>{{ c.id }}</td><td>{{ c.code }}</td><td>{{ c.name }}</td><td>{{ c.description or '-' }}</td><td>{{ m.badge('active' if c.is_active else 'inactive') }}</td>
+<td class="actions"><a href="{{ url_for('admin.course_form', course_id=c.id) }}">Edit</a> | <a href="{{ url_for('admin.course_delete', course_id=c.id) }}">Delete</a></td></tr>
+{% else %}{{ m.empty(6, 'No courses yet. Add the first one.') }}{% endfor %}</tbody></table></div>
+<div class="card-body py-2 small"><a href="{{ url_for('admin.courses') }}">View all courses &rarr;</a></div></div>
+
+<div class="card mb-3"><div class="card-header">Examinations <a class="btn btn-sm btn-gold" href="{{ url_for('admin.exam_form') }}">+ New Exam</a></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Course</th><th>Name</th><th>Type</th><th>Duration</th><th>Max marks</th><th>Action</th></tr></thead><tbody>
+{% for e in exams %}<tr><td>{{ e.id }}</td><td>{{ e.course_code }}</td><td>{{ e.name }}</td><td>{{ e.exam_type }}</td><td>{{ e.duration_minutes }} min</td><td>{{ e.max_marks|num }}</td>
+<td class="actions"><a href="{{ url_for('admin.exam_form', exam_id=e.id) }}">Edit</a> | <a href="{{ url_for('admin.exam_delete', exam_id=e.id) }}">Delete</a> | <a href="{{ url_for('admin.rubrics', exam_id=e.id) }}">Rubrics</a></td></tr>
+{% else %}{{ m.empty(7, 'No examinations yet.') }}{% endfor %}</tbody></table></div>
+<div class="card-body py-2 small"><a href="{{ url_for('admin.exams') }}">View all examinations &rarr;</a></div></div>
+
+<div class="card"><div class="card-header">Examiners</div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Name</th><th>Contact details</th><th>Department</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for x in examiners %}<tr><td>{{ x.id }}</td><td>{{ x.name }}</td><td>{{ x.email }}<br><small>{{ x.phone }}</small></td><td>{{ x.department }}</td><td>{{ m.badge(x.status) }}</td>
+<td><a href="{{ url_for('admin.examiner_view', examiner_id=x.id) }}">View/Approve</a></td></tr>
+{% else %}{{ m.empty(6, 'No examiners have registered yet.') }}{% endfor %}</tbody></table></div>
+<div class="card-body py-2 small"><a href="{{ url_for('admin.examiners') }}">View all examiners &rarr;</a></div></div>
+{% endblock %}

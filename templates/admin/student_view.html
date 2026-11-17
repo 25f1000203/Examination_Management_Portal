@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Student{% endblock %}
+{% block content %}
+<h3 class="page-title">Student #{{ student.id }} &mdash; {{ student.name }} {{ m.badge('active' if student.is_active else 'deactivated') }}</h3>
+<div class="card mb-3"><div class="card-body"><p class="mb-2">{{ student.email }} &middot; {{ student.phone }} &middot; {{ student.department or 'No department' }} &middot; joined {{ student.created_at }}</p>
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}"><input type="hidden" name="action" value="{{ 'deactivate' if student.is_active else 'activate' }}">
+<button class="btn {{ 'btn-outline-danger' if student.is_active else 'btn-emp' }}">{{ 'Deactivate student' if student.is_active else 'Activate student' }}</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.students') }}">Back</a></form></div></div>
+<div class="card"><div class="card-header">Bookings</div><div class="table-responsive"><table class="table"><thead><tr><th>Id</th><th>Course</th><th>Exam</th><th>Slot</th><th>Booked at</th><th>Status</th></tr></thead><tbody>
+{% for b in bookings %}<tr><td>{{ b.id }}</td><td>{{ b.course_code }}</td><td>{{ b.exam_name }}</td><td>{{ b.slot_date }} {{ b.start_time }}-{{ b.end_time }}</td><td>{{ b.booked_at }}</td><td>{{ m.badge(b.status) }}</td></tr>
+{% else %}{{ m.empty(6, 'No bookings.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

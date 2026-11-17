@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Examiners{% endblock %}
+{% block content %}
+<h3 class="page-title">Examiners</h3>
+<div class="card"><div class="card-header">All examiners</div>
+<div class="card-body border-bottom"><form class="row g-2" method="get">
+  <div class="col-md-4"><input class="form-control" name="q" value="{{ q }}" placeholder="Search name, email, department"></div>
+  <div class="col-md-3"><select class="form-select" name="status"><option value="">All statuses</option>{% for s in ['pending','approved','rejected','deactivated'] %}<option {% if s == status %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
+  <div class="col-auto"><button class="btn btn-emp">Search</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.examiners') }}">Reset</a></div></form></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Name</th><th>Contact details</th><th>Department</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for x in examiners %}<tr><td>{{ x.id }}</td><td>{{ x.name }}</td><td>{{ x.email }}<br><small>{{ x.phone }}</small></td><td>{{ x.department }}</td><td>{{ m.badge(x.status) }}</td><td><a href="{{ url_for('admin.examiner_view', examiner_id=x.id) }}">View/Approve</a></td></tr>
+{% else %}{{ m.empty(6, 'No examiners found.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

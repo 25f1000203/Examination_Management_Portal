@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Examinations{% endblock %}
+{% block content %}
+<h3 class="page-title">Examinations</h3>
+<div class="card"><div class="card-header">All examinations <a class="btn btn-sm btn-gold" href="{{ url_for('admin.exam_form') }}">+ New Exam</a></div>
+<div class="card-body border-bottom"><form class="row g-2" method="get">
+  <div class="col-md-4"><input class="form-control" name="q" value="{{ q }}" placeholder="Search name, course code or type"></div>
+  <div class="col-md-3"><select class="form-select" name="course_id"><option value="">All courses</option>{% for c in courses %}<option value="{{ c.id }}" {% if c.id == course_id %}selected{% endif %}>{{ c.code }}</option>{% endfor %}</select></div>
+  <div class="col-auto"><button class="btn btn-emp">Search</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.exams') }}">Reset</a></div></form></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Course</th><th>Name</th><th>Type</th><th>Duration</th><th>Max marks</th><th>Examiner</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for e in exams %}<tr><td>{{ e.id }}</td><td>{{ e.course_code }}</td><td>{{ e.name }}</td><td>{{ e.exam_type }}</td><td>{{ e.duration_minutes }} min</td><td>{{ e.max_marks|num }}</td><td>{{ e.examiner_name or 'Not assigned' }}</td><td>{{ m.badge('active' if e.is_active else 'inactive') }}</td>
+<td class="actions"><a href="{{ url_for('admin.exam_form', exam_id=e.id) }}">Edit</a> | <a href="{{ url_for('admin.rubrics', exam_id=e.id) }}">Rubrics</a> | <a href="{{ url_for('admin.timeline', exam_id=e.id) }}">Timeline</a> | <a href="{{ url_for('admin.slot_form', exam_id=e.id) }}">+ Slots</a> | <a href="{{ url_for('admin.exam_delete', exam_id=e.id) }}">Delete</a></td></tr>
+{% else %}{{ m.empty(9, 'No examinations found.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

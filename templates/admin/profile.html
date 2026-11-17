@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<h3 class="page-title">My profile</h3>
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Details</div>
+      <div class="card-body">
+        <form method="post">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <input type="hidden" name="form" value="details">
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input class="form-control" value="{{ admin.email }}" disabled>
+          </div>
+          {{ m.field('Full name', 'name', admin.name) }}
+          <button class="btn btn-emp">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header">Change password</div>
+      <div class="card-body">
+        <form method="post">
+          <input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+          <input type="hidden" name="form" value="password">
+          {{ m.field('Current password', 'current_password', '', 'password') }}
+          {{ m.field('New password', 'new_password', '', 'password', help='At least 6 characters') }}
+          <button class="btn btn-emp">Change password</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

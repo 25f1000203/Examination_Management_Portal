@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}History{% endblock %}
+{% block content %}
+<h3 class="page-title">Historical records</h3>
+<div class="card mb-3"><div class="card-header">Booking history log</div>
+<div class="card-body border-bottom"><form class="row g-2" method="get"><div class="col-md-4"><input class="form-control" name="q" value="{{ q }}" placeholder="Search student, exam or note"></div>
+<div class="col-md-3"><select class="form-select" name="action"><option value="">All actions</option>{% for a in actions %}<option {% if a == action %}selected{% endif %}>{{ a }}</option>{% endfor %}</select></div>
+<div class="col-auto"><button class="btn btn-emp">Search</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.history') }}">Reset</a></div></form></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>When</th><th>Booking</th><th>Student</th><th>Exam</th><th>Action</th><th>By</th><th>Slot change</th><th>Note</th></tr></thead><tbody>
+{% for h in log %}<tr><td>{{ h.created_at }}</td><td>#{{ h.booking_id }}</td><td>{{ h.student_name }}</td><td>{{ h.exam_name }}</td><td>{{ h.action.replace('_',' ') }}</td><td>{{ h.actor_role }} #{{ h.actor_id }}</td><td>{{ h.old_slot_id or '-' }} &rarr; {{ h.new_slot_id or '-' }}</td><td>{{ h.note or '' }}</td></tr>
+{% else %}{{ m.empty(8, 'No history yet.') }}{% endfor %}</tbody></table></div></div>
+<div class="card"><div class="card-header">Evaluation records</div><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Student</th><th>Exam</th><th>Examiner</th><th>Marks</th><th>Remarks</th><th>Submitted</th></tr></thead><tbody>
+{% for e in evaluations %}<tr><td>{{ e.id }}</td><td>{{ e.student_name }}</td><td>{{ e.exam_name }}</td><td>{{ e.examiner_name }}</td><td>{{ e.total_marks|num }} / {{ e.max_marks|num }}</td><td>{{ e.remarks or '-' }}</td><td>{{ e.submitted_at }}</td></tr>
+{% else %}{{ m.empty(7, 'No evaluations yet.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

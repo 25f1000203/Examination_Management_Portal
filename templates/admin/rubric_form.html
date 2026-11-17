@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Rubric{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:640px"><div class="card-header">{{ 'Edit' if rubric else 'Add' }} rubric criteria</div><div class="card-body">
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <div class="mb-3"><label class="form-label">Exam</label><input class="form-control" value="#{{ exam.id }} {{ exam.name }} (max {{ exam.max_marks|num }})" disabled></div>
+  {{ m.field('Criteria name', 'criteria_name', data.get('criteria_name','')) }}
+  <div class="row"><div class="col-md-6">{{ m.field('Max marks', 'max_marks', data.get('max_marks')|num if data.get('max_marks') else '', 'number', extra='min="0.5" step="0.5"') }}</div>
+  <div class="col-md-6">{{ m.field('Weightage (%)', 'weightage', data.get('weightage')|num if data.get('weightage') is not none else '', 'number', False, 'Informational, 0-100', 'min="0" max="100" step="0.5"') }}</div></div>
+  <div class="mb-3"><label class="form-label" for="description">Description</label><textarea class="form-control" id="description" name="description" rows="2">{{ data.get('description') or '' }}</textarea></div>
+  <button class="btn btn-emp">{{ 'Update' if rubric else 'Save' }}</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.rubrics', exam_id=exam.id) }}">Cancel</a>
+</form></div></div>
+{% endblock %}

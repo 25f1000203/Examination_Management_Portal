@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Bookings{% endblock %}
+{% block content %}
+<h3 class="page-title">Bookings &amp; registered students</h3>
+<div class="card"><div class="card-header">Bookings</div>
+<div class="card-body border-bottom"><form class="row g-2" method="get">
+  <div class="col-md-4"><select class="form-select" name="exam_id"><option value="">Select Exam (all)</option>{% for e in exams %}<option value="{{ e.id }}" {% if e.id == exam_id %}selected{% endif %}>#{{ e.id }} {{ e.name }}</option>{% endfor %}</select></div>
+  <div class="col-md-3"><input class="form-control" type="number" min="1" name="student_id" value="{{ student_id or '' }}" placeholder="Search by student Id"></div>
+  <div class="col-md-2"><select class="form-select" name="status"><option value="">Any status</option>{% for s in ['booked','completed','cancelled'] %}<option {% if s == status %}selected{% endif %}>{{ s }}</option>{% endfor %}</select></div>
+  <div class="col-auto"><button class="btn btn-emp">Search</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.bookings') }}">Close</a></div></form></div>
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Student</th><th>Course Id</th><th>Exam Id</th><th>Slot booking date</th><th>Examiner</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for b in bookings %}<tr><td>{{ b.id }}</td><td>#{{ b.student_id }} {{ b.student_name }}</td><td>{{ b.course_id }} ({{ b.course_code }})</td><td>{{ b.exam_id }} {{ b.exam_name }}</td><td>{{ b.slot_date }} {{ b.start_time }}-{{ b.end_time }}</td><td>{{ b.examiner_name }}</td><td>{{ m.badge(b.status) }}</td>
+<td class="actions">{% if b.status == 'booked' %}<a href="{{ url_for('admin.booking_reschedule', booking_id=b.id) }}">Reschedule</a> | <a href="{{ url_for('admin.booking_cancel', booking_id=b.id) }}">Cancel</a>{% else %}-{% endif %}</td></tr>
+{% else %}{{ m.empty(8, 'No bookings found.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}My Exams{% endblock %}
+{% block content %}
+<h3 class="page-title">Assigned examinations</h3>
+<div class="card"><div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Course</th><th>Name</th><th>Type</th><th>Duration</th><th>Max marks</th><th>Slot creation</th><th>Action</th></tr></thead><tbody>
+{% for e in exams %}<tr><td>{{ e.id }}</td><td>{{ e.course_code }}</td><td>{{ e.name }}</td><td>{{ e.exam_type }}</td><td>{{ e.duration_minutes }} min</td><td>{{ e.max_marks|num }}</td>
+<td>{% if not e.slot_creation_enabled %}{{ m.badge('disabled') }}{% else %}{{ m.badge('open') }}<br><small>until {{ e.slot_creation_deadline|dt if e.slot_creation_deadline else 'no deadline' }}</small>{% endif %}</td>
+<td><a href="{{ url_for('examiner.slot_form', exam_id=e.id) }}">+ Fill availability</a></td></tr>
+{% else %}{{ m.empty(8, 'No exams assigned.') }}{% endfor %}</tbody></table></div></div>
+{% endblock %}

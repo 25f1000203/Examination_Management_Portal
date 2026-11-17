@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Exam details{% endblock %}
+{% block content %}
+<h3 class="page-title">{{ exam.course_code }} &mdash; {{ exam.name }}</h3>
+<div class="row g-3 mb-3">
+ <div class="col-md-6"><div class="card h-100"><div class="card-header">Details</div><div class="card-body"><dl class="row mb-0">
+  <dt class="col-5">Course</dt><dd class="col-7">{{ exam.course_name }}</dd><dt class="col-5">Type</dt><dd class="col-7">{{ exam.exam_type }}</dd><dt class="col-5">Duration</dt><dd class="col-7">{{ exam.duration_minutes }} minutes</dd><dt class="col-5">Max marks</dt><dd class="col-7">{{ exam.max_marks|num }}</dd><dt class="col-5">Examiner</dt><dd class="col-7">{{ exam.examiner_name or 'To be announced' }}</dd><dt class="col-5">About</dt><dd class="col-7">{{ exam.description or '-' }}</dd></dl></div></div></div>
+ <div class="col-md-6"><div class="card h-100"><div class="card-header">Timeline</div><div class="card-body"><dl class="row mb-0">
+  <dt class="col-6">Booking</dt><dd class="col-6">{{ m.badge('open' if tl.booking_enabled else 'disabled') }}</dd><dt class="col-6">Opens</dt><dd class="col-6">{{ tl.booking_start|dt }}</dd><dt class="col-6">Booking deadline</dt><dd class="col-6">{{ tl.booking_deadline|dt }}</dd><dt class="col-6">Cancellation deadline</dt><dd class="col-6">{{ tl.cancellation_deadline|dt if tl.cancellation_deadline else 'Until slot starts' }}</dd></dl></div></div></div>
+</div>
+<div class="card mb-3"><div class="card-header">Marking rubric</div><div class="table-responsive"><table class="table"><thead><tr><th>Criteria</th><th>Max marks</th><th>Weightage %</th></tr></thead><tbody>
+{% for r in rubrics %}<tr><td>{{ r.criteria_name }}</td><td>{{ r.max_marks|num }}</td><td>{{ r.weightage|num }}</td></tr>{% else %}{{ m.empty(3, 'Rubric not published yet.') }}{% endfor %}</tbody></table></div></div>
+<div class="card"><div class="card-header">Available slots</div>
+{% if my_booking %}<div class="card-body py-2"><div class="alert alert-info py-2 mb-0">You already have a booking for this exam (status: {{ my_booking.status }}). <a href="{{ url_for('student.history') }}">See history</a></div></div>{% endif %}
+<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Id</th><th>Date</th><th>Start</th><th>End</th><th>Examiner</th><th>Available</th><th>Action</th></tr></thead><tbody>
+{% for s in slots %}<tr><td>{{ s.id }}</td><td>{{ s.slot_date }}</td><td>{{ s.start_time }}</td><td>{{ s.end_time }}</td><td>{{ s.examiner_name }}</td><td>{{ s.available }} / {{ s.capacity }}</td><td><a class="btn btn-sm btn-gold" href="{{ url_for('student.book', slot_id=s.id) }}">Book</a></td></tr>
+{% else %}{{ m.empty(7, 'No bookable slots for this exam right now.') }}{% endfor %}</tbody></table></div></div>
+<a class="btn btn-outline-emp mt-3" href="{{ url_for('student.exams') }}">&larr; Back to exams</a>
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Course{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:640px"><div class="card-header">{{ 'Edit course' if course else 'Add course' }}</div><div class="card-body">
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  {{ m.field('Course code', 'code', data.get('code','')) }}
+  {{ m.field('Name', 'name', data.get('name','')) }}
+  <div class="mb-3"><label class="form-label" for="description">Description</label><textarea class="form-control" id="description" name="description" rows="3">{{ data.get('description') or '' }}</textarea></div>
+  <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if data.get('is_active') %}checked{% endif %}><label class="form-check-label" for="is_active">Active</label></div>
+  <button class="btn btn-emp">{{ 'Update' if course else 'Save' }}</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.courses') }}">Cancel</a>
+</form></div></div>
+{% endblock %}

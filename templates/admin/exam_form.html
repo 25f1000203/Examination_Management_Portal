@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Examination{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:700px"><div class="card-header">{{ 'Edit examination' if exam else 'Add examination' }}</div><div class="card-body">
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  <div class="mb-3"><label class="form-label" for="course_id">Course *</label><select class="form-select" id="course_id" name="course_id" required><option value="">Select course</option>{% for c in courses %}<option value="{{ c.id }}" {% if c.id == data.get('course_id') %}selected{% endif %}>{{ c.code }} - {{ c.name }}</option>{% endfor %}</select></div>
+  {{ m.field('Name', 'name', data.get('name','')) }}
+  <div class="row"><div class="col-md-6"><div class="mb-3"><label class="form-label" for="exam_type">Type *</label><select class="form-select" id="exam_type" name="exam_type" required>
+    <option value="" {% if data.get('exam_type') not in exam_types %}selected{% endif %}>{% if exam and exam.exam_type not in exam_types %}Select an official type (existing value: {{ exam.exam_type }}){% else %}Select type{% endif %}</option>
+    {% for t in exam_types %}<option value="{{ t }}" {% if t == data.get('exam_type') %}selected{% endif %}>{{ t }}</option>{% endfor %}
+  </select></div></div>
+  <div class="col-md-6">{{ m.field('Duration (minutes)', 'duration_minutes', data.get('duration_minutes',''), 'number', extra='min="1" step="1"') }}</div></div>
+  <div class="row"><div class="col-md-6">{{ m.field('Max marks', 'max_marks', data.get('max_marks')|num if data.get('max_marks') else '', 'number', extra='min="1" step="0.5"') }}</div>
+  <div class="col-md-6"><div class="mb-3"><label class="form-label" for="examiner_id">Assigned examiner</label><select class="form-select" id="examiner_id" name="examiner_id"><option value="">Not assigned</option>{% for x in examiners %}<option value="{{ x.id }}" {% if x.id == data.get('examiner_id') %}selected{% endif %}>{{ x.name }} ({{ x.department }})</option>{% endfor %}</select></div></div></div>
+  <div class="mb-3"><label class="form-label" for="description">Description</label><textarea class="form-control" id="description" name="description" rows="2">{{ data.get('description') or '' }}</textarea></div>
+  <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="is_active" name="is_active" {% if data.get('is_active') %}checked{% endif %}><label class="form-check-label" for="is_active">Active</label></div>
+  <button class="btn btn-emp">{{ 'Update' if exam else 'Save' }}</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.exams') }}">Cancel</a>
+  {% if exam %}<a class="btn btn-gold float-end" href="{{ url_for('admin.slot_form', exam_id=exam.id) }}">+ Slots</a>{% endif %}
+</form></div></div>
+{% endblock %}

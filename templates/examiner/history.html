@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block title %}Evaluation history{% endblock %}
+{% block content %}
+<h3 class="page-title">Evaluation history</h3>
+{% for e in evaluations %}
+<div class="card mb-3"><div class="card-header">#{{ e.id }} {{ e.student_name }} &mdash; {{ e.exam_name }} <span>{{ e.total_marks|num }} / {{ e.max_marks|num }}</span></div><div class="card-body">
+  <p class="small text-muted mb-2">Slot date {{ e.slot_date }} &middot; submitted {{ e.submitted_at }}</p>
+  <ul class="mb-2">{% for d in details[e.id] %}<li>{{ d.criteria_name }}: {{ d.marks|num }} / {{ d.max_marks|num }}</li>{% endfor %}</ul>
+  <div><strong>Remarks:</strong> {{ e.remarks or '-' }}</div></div></div>
+{% else %}<div class="card"><div class="empty">You have not submitted any evaluations yet.</div></div>{% endfor %}
+{% endblock %}

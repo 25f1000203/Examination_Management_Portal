@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% block title %}Evaluate{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:800px"><div class="card-header">Rubrics &mdash; evaluate student</div><div class="card-body">
+<dl class="row"><dt class="col-sm-4">Slot Id</dt><dd class="col-sm-8">{{ booking.slot_id }}</dd><dt class="col-sm-4">Student</dt><dd class="col-sm-8">#{{ booking.student_id }} {{ booking.student_name }}</dd><dt class="col-sm-4">Examination date/time</dt><dd class="col-sm-8">{{ booking.slot_date }} {{ booking.start_time }}-{{ booking.end_time }}</dd><dt class="col-sm-4">Exam</dt><dd class="col-sm-8">{{ booking.exam_name }} (max {{ booking.max_marks|num }})</dd></dl>
+<hr>
+{% if rubrics %}
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  {% for r in rubrics %}
+  <div class="row mb-3 align-items-center"><div class="col-md-8"><label class="form-label mb-0" for="marks_{{ r.id }}">Criteria {{ loop.index }}: {{ r.criteria_name }}</label><div class="form-text mt-0">{{ r.description or '' }} Weightage {{ r.weightage|num }}%</div></div>
+  <div class="col-md-4"><div class="input-group"><input class="form-control" id="marks_{{ r.id }}" name="marks_{{ r.id }}" type="number" min="0" max="{{ r.max_marks }}" step="0.5" value="{{ form.get('marks_' ~ r.id, '') }}" placeholder="Awarded marks" required><span class="input-group-text">/ {{ r.max_marks|num }}</span></div></div></div>
+  {% endfor %}
+  <div class="mb-3"><label class="form-label" for="remarks">Remarks / feedback for the student</label><textarea class="form-control" id="remarks" name="remarks" rows="3">{{ form.get('remarks','') }}</textarea></div>
+  <div class="alert alert-warning py-2 small">An evaluation can be submitted only once and cannot be changed afterwards.</div>
+  <button class="btn btn-emp">Submit</button> <a class="btn btn-outline-emp" href="{{ url_for('examiner.dashboard') }}">Cancel</a>
+</form>
+{% else %}<div class="alert alert-warning">No rubric exists for this examination yet. Ask the Admin to add rubric criteria.</div><a class="btn btn-outline-emp" href="{{ url_for('examiner.dashboard') }}">Back</a>{% endif %}
+</div></div>
+{% endblock %}

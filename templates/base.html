@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Home{% endblock %} | Examination Management Portal</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+{% import '_macros.html' as m %}
+{% if role %}
+{% set menus = {
+  'admin': [('admin.dashboard','Home'),('admin.courses','Courses'),('admin.exams','Examinations'),('admin.examiners','Examiners'),('admin.students','Students'),('admin.slots','Slots'),('admin.bookings','Bookings'),('admin.history','History'),('admin.profile','Profile')],
+  'examiner': [('examiner.dashboard','Home'),('examiner.exams','Exams'),('examiner.slots','Slots'),('examiner.history','History'),('examiner.profile','Profile')],
+  'student': [('student.dashboard','Home'),('student.exams','Exams'),('student.slots','Slots'),('student.history','History'),('student.profile','Profile')]
+} %}
+<nav class="navbar emp-nav px-3 py-2">
+  <a class="navbar-brand" href="/"><img src="{{ url_for('static', filename='images/logo.svg') }}" alt="">EMP <small class="text-capitalize" style="color:var(--gold)">{{ role }}</small></a>
+  <ul class="navbar-nav flex-row me-auto ms-3">
+    {% for endpoint, label in menus[role] %}
+    <li class="nav-item"><a class="nav-link {% if request.endpoint == endpoint %}active{% endif %}" href="{{ url_for(endpoint) }}">{{ label }}</a></li>
+    {% endfor %}
+  </ul>
+  {% if not (role == 'examiner' and request.endpoint == 'examiner.pending') %}
+  <form class="d-flex me-3" action="{{ url_for(role ~ '.search') }}" method="get">
+    <input class="form-control form-control-sm" type="search" name="q" placeholder="Search anything here..." value="{{ request.args.get('q','') if request.endpoint.endswith('.search') else '' }}">
+  </form>
+  {% endif %}
+  <span class="user-box">{{ user_name }} &middot; <a href="{{ url_for('auth.logout') }}">Logout</a></span>
+</nav>
+{% endif %}
+
+<main class="container py-3">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} py-2">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<div class="footer">Examination Management Portal &middot; IITM MAD-1 project</div>
+</body>
+</html>

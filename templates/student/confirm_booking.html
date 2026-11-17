@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block title %}Confirm{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-4" style="max-width:560px"><div class="card-header">{{ 'Confirm cancellation' if cancel else 'Confirm booking' }}</div><div class="card-body">
+  <p>Are you sure you want to {{ 'cancel your booking for' if cancel else 'book' }} this slot?</p>
+  <dl class="row"><dt class="col-4">Exam</dt><dd class="col-8">{{ slot.course_code }} / {{ slot.exam_name }}</dd><dt class="col-4">Date</dt><dd class="col-8">{{ slot.slot_date }}</dd><dt class="col-4">Time</dt><dd class="col-8">{{ slot.start_time }} - {{ slot.end_time }}</dd><dt class="col-4">Examiner</dt><dd class="col-8">{{ slot.examiner_name }}</dd></dl>
+  <form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+    <button class="btn {{ 'btn-outline-danger' if cancel else 'btn-emp' }}">{{ 'Yes, cancel booking' if cancel else 'Yes, book this slot' }}</button> <a class="btn btn-outline-emp" href="{{ url_for('student.history' if cancel else 'student.slots') }}">Go back</a></form>
+</div></div>
+{% endblock %}

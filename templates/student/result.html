@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block title %}Result{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:700px"><div class="card-header">Result &mdash; {{ booking.exam_name }} <span>{{ booking.total_marks|num }} / {{ booking.max_marks|num }}</span></div><div class="card-body">
+<p class="small text-muted">{{ booking.course_code }} &middot; {{ booking.slot_date }} &middot; examiner {{ booking.examiner_name }}</p>
+<table class="table"><thead><tr><th>Criteria</th><th>Awarded</th><th>Out of</th></tr></thead><tbody>{% for r in marks %}<tr><td>{{ r.criteria_name }}</td><td>{{ r.marks|num }}</td><td>{{ r.max_marks|num }}</td></tr>{% endfor %}<tr><th>Total</th><th>{{ booking.total_marks|num }}</th><th>{{ booking.max_marks|num }}</th></tr></tbody></table>
+<h6>Examiner feedback</h6><p>{{ evaluation.remarks or 'No remarks given.' }}</p>
+<a class="btn btn-outline-emp" href="{{ url_for('student.history') }}">Back</a></div></div>
+{% endblock %}

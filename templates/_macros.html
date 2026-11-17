@@ -1,0 +1,16 @@
+{% macro badge(status) %}
+{% set colours = {'approved':'green','active':'green','completed':'green','booked':'blue','pending':'gold','rejected':'red','deactivated':'red','cancelled':'grey','closed':'grey','inactive':'grey','evaluated':'green','open':'green','disabled':'red'} %}
+<span class="st st-{{ colours.get(status, 'blue') }}">{{ status }}</span>
+{% endmacro %}
+
+{% macro field(label, name, value='', type='text', required=True, help='', extra='') %}
+<div class="mb-3">
+  <label class="form-label" for="{{ name }}">{{ label }}{% if required %} *{% endif %}</label>
+  <input class="form-control" id="{{ name }}" name="{{ name }}" type="{{ type }}" value="{{ value if value is not none else '' }}" {% if required %}required{% endif %} {{ extra|safe }}>
+  {% if help %}<div class="form-text">{{ help }}</div>{% endif %}
+</div>
+{% endmacro %}
+
+{% macro empty(cols, text='Nothing to show yet.') %}
+<tr><td colspan="{{ cols }}" class="empty">{{ text }}</td></tr>
+{% endmacro %}

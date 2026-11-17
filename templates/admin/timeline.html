@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% import '_macros.html' as m %}
+{% block title %}Timeline{% endblock %}
+{% block content %}
+<div class="card mx-auto mt-3" style="max-width:700px"><div class="card-header">Timeline &amp; switches &mdash; {{ exam.name }}</div><div class="card-body">
+<p class="small text-muted">Leave a date empty for "no limit". Dates use the server's local time.</p>
+<form method="post"><input type="hidden" name="_csrf" value="{{ csrf_token() }}">
+  {{ m.field('Slot creation deadline (examiners)', 'slot_creation_deadline', tl.slot_creation_deadline, 'datetime-local', False) }}
+  {{ m.field('Booking opens', 'booking_start', tl.booking_start, 'datetime-local', False) }}
+  {{ m.field('Booking deadline', 'booking_deadline', tl.booking_deadline, 'datetime-local', False) }}
+  {{ m.field('Cancellation deadline', 'cancellation_deadline', tl.cancellation_deadline, 'datetime-local', False, 'If empty, students may cancel until the slot starts.') }}
+  <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="slot_creation_enabled" name="slot_creation_enabled" {% if tl.slot_creation_enabled %}checked{% endif %}><label class="form-check-label" for="slot_creation_enabled">Slot creation enabled (examiners can create/edit/delete slots)</label></div>
+  <div class="form-check mb-2"><input class="form-check-input" type="checkbox" id="booking_enabled" name="booking_enabled" {% if tl.booking_enabled %}checked{% endif %}><label class="form-check-label" for="booking_enabled">Student booking enabled</label></div>
+  <div class="form-check mb-3"><input class="form-check-input" type="checkbox" id="results_published" name="results_published" {% if tl.results_published %}checked{% endif %}><label class="form-check-label" for="results_published">Results published (students can see marks and feedback)</label></div>
+  <button class="btn btn-emp">Update</button> <a class="btn btn-outline-emp" href="{{ url_for('admin.exams') }}">Cancel</a>
+</form></div></div>
+{% endblock %}
